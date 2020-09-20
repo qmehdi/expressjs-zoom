@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/qmehdi/zoom-clone/issues"
   },
-  "homepage": "https://github.com/qmehdi/zoom-clone#readme"
+  "homepage": "https://github.com/qmehdi/zoom-clone#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
