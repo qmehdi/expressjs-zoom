@@ -66,3 +66,21 @@ const addVideoStream = (video, stream) => {
     });
     videoGrid.append(video);
 }
+
+// JQuery
+let text = $('input')
+
+// Send message when ENTER key is pressed but only when char is > 1
+$('html').keydown((e) => {
+    if (e.which == 13 && text.val().length !== 0) {
+        console.log(text.val())
+        // Send message from Frontend
+        socket.emit('message', text.val());
+        text.val('')
+    }
+  });
+
+  // Received the message
+  socket.on('createMessage', message => {
+    console.log('This is coming from server ', message)
+  })

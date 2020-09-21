@@ -30,6 +30,13 @@ io.on('connection', socket => {
 
         // Tell everybody else inside the room that this user has connected
         socket.to(roomId).broadcast.emit('user-connected', userId);
+
+        // Listen for the message
+        // When Enter is pressed in the Chat, this will receive it
+        socket.on('message', message => {
+            // Send message to only the specific room, not all rooms
+            io.to(roomId).emit('createMessage', message)
+        })
     })
 })
 
