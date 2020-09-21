@@ -37,6 +37,10 @@ io.on('connection', socket => {
             // Send message to only the specific room, not all rooms
             io.to(roomId).emit('createMessage', message)
         })
+
+        socket.on('disconnect', () => {
+            socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        })
     })
 })
 

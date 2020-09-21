@@ -13,6 +13,7 @@ const videoGrid = document.getElementById('video-grid');
 const myVideo = document.createElement('video');
 myVideo.muted = true;
 
+const peers = {}
 
 // This is a promise. An event in the future that will be either resolved or rejected
 navigator.mediaDevices.getUserMedia({
@@ -54,10 +55,15 @@ navigator.mediaDevices.getUserMedia({
     socket.on('createMessage', message => {
         // Send the message as a list item back to the UI
         $('.messages').append(`<li class="message"><b>user</b><br/>${message}></li>`)
+        scrollToBottom()
         console.log('This is coming from server ', message)
     })
-})
 
+    socket.on('user-disconnected', userId => {
+        if (peers[userId]) peers[userId].close()
+    })
+})
+  
 peer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id);
     console.log(id);
@@ -75,6 +81,12 @@ const connecToNewUser = (userId, stream) => {
     call.on('stream', userVideoStream => {
         addVideoStream(video, userVideoStream)
     })
+    
+    call.on('close', () => {
+        video.remove()
+    })
+
+    peers[userId] = call
 
     console.log(userId, ' new user');
 }
