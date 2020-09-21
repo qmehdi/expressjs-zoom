@@ -1,6 +1,12 @@
 // This is where the JavaScript for the Frontend is going to live
 const socket = io('/');
 
+var peer = new Peer(undefined, {
+    path: '/peerjs',
+    host: '/',
+    port: '3030'
+});
+
 // Create a video element and show our own video on the page
 let myVideoStream;
 const videoGrid = document.getElementById('video-grid');
@@ -17,14 +23,18 @@ navigator.mediaDevices.getUserMedia({
     addVideoStream(myVideo, stream);
 })
 
+peer.on('open', id => {
+    socket.emit('join-room', ROOM_ID, id);
+    console.log(id);
+})
 socket.emit('join-room', ROOM_ID); // The ROOM_ID is coming from room.ejs > const ROOM_ID
 
-socket.on('user-connected', () => {
-    connecToNewUser();
+socket.on('user-connected', (userId) => {
+    connecToNewUser(userId);
 })
 
-const connecToNewUser = () => {
-    console.log('new user');
+const connecToNewUser = (userId) => {
+    console.log(userId, ' new user');
 }
 
 const addVideoStream = (video, stream) => {
