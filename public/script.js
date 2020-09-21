@@ -1,4 +1,5 @@
 // This is where the JavaScript for the Frontend is going to live
+const socket = io('/');
 
 // Create a video element and show our own video on the page
 let myVideoStream;
@@ -15,6 +16,8 @@ navigator.mediaDevices.getUserMedia({
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
 })
+
+socket.emit('join-room');
 
 const addVideoStream = (video, stream) => {
     video.srcObject = stream;
