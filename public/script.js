@@ -21,6 +21,21 @@ navigator.mediaDevices.getUserMedia({
 }).then(stream => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
+
+    // ######## ANSWER #########
+    // Add video stream from User B
+    peer.on('call', call => {
+        call.answer(stream)
+        const video = document.createElement('video')
+        call.on('stream', userVideoStream => {
+          addVideoStream(video, userVideoStream)
+        })
+      })
+
+    // Whenever a new user connects
+    socket.on('user-connected', (userId) => {
+        connecToNewUser(userId, stream);
+    })
 })
 
 peer.on('open', id => {
@@ -29,11 +44,18 @@ peer.on('open', id => {
 })
 socket.emit('join-room', ROOM_ID); // The ROOM_ID is coming from room.ejs > const ROOM_ID
 
-socket.on('user-connected', (userId) => {
-    connecToNewUser(userId);
-})
+// ######## CALL #########
+// When user B connects and user A is already present...
+const connecToNewUser = (userId, stream) => {
+    // User A calls User B
+    const call = peer.call(userId, stream)
+    // Create new video element for purposes of sending to user B
+    const video = document.createElement('video')
+    // Send user B the stream
+    call.on('stream', userVideoStream => {
+        addVideoStream(video, userVideoStream)
+    })
 
-const connecToNewUser = (userId) => {
     console.log(userId, ' new user');
 }
 
