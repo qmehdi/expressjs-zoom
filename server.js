@@ -18,8 +18,12 @@ app.get('/:room', (req, res) => {
 
 io.on('connection', socket => {
     // The user will join the room
-    socket.on('join-room', () => {
+    socket.on('join-room', (roomId) => {
+        socket.join(roomId);
         console.log("Joined the room");
+        
+        // Tell everybody else inside the room that this user has connected
+        socket.to(roomId).broadcast.emit('user-connected');
     })
 })
 
