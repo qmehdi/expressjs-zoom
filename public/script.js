@@ -4,7 +4,7 @@ const socket = io('/');
 var peer = new Peer(undefined, {
     path: '/peerjs',
     host: '/',
-    port: '3030'
+    port: '443'
 });
 
 // Create a video element and show our own video on the page
@@ -54,7 +54,7 @@ navigator.mediaDevices.getUserMedia({
     // Received the message
     socket.on('createMessage', message => {
         // Send the message as a list item back to the UI
-        $('.messages').append(`<li class="message"><b>user</b><br/>${message}></li>`)
+        $('.messages').append(`<li class="message"><b>user</b><br/>${message}</li>`)
         scrollToBottom()
         console.log('This is coming from server ', message)
     })
