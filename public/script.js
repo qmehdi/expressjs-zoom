@@ -36,6 +36,26 @@ navigator.mediaDevices.getUserMedia({
     socket.on('user-connected', (userId) => {
         connecToNewUser(userId, stream);
     })
+
+    // JQuery
+    let text = $('input')
+
+    // Send message when ENTER key is pressed but only when char is > 1
+    $('html').keydown((e) => {
+        if (e.which == 13 && text.val().length !== 0) {
+            console.log(text.val())
+            // Send message from Frontend
+            socket.emit('message', text.val());
+            text.val('')
+        }
+    });
+
+    // Received the message
+    socket.on('createMessage', message => {
+        // Send the message as a list item back to the UI
+        $('.messages').append(`<li class="message"><b>user</b><br/>${message}></li>`)
+        console.log('This is coming from server ', message)
+    })
 })
 
 peer.on('open', id => {
@@ -67,20 +87,8 @@ const addVideoStream = (video, stream) => {
     videoGrid.append(video);
 }
 
-// JQuery
-let text = $('input')
-
-// Send message when ENTER key is pressed but only when char is > 1
-$('html').keydown((e) => {
-    if (e.which == 13 && text.val().length !== 0) {
-        console.log(text.val())
-        // Send message from Frontend
-        socket.emit('message', text.val());
-        text.val('')
-    }
-  });
-
-  // Received the message
-  socket.on('createMessage', message => {
-    console.log('This is coming from server ', message)
-  })
+// Always scroll to the bottom as new chat messages come in
+const scrollToBottom = () => {
+    var d = $('.main__chat_window');
+    d.scrollTop(d.prop("scrollHeight"));
+}
